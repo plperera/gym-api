@@ -1,9 +1,5 @@
 import { prisma } from "@/config";
 
-async function findFirst() {
-    return prisma.users.findFirst();
-}
-
 async function findFirstWithEmail(email:string) {
     return prisma.users.findFirst({
         where:{
@@ -13,7 +9,6 @@ async function findFirstWithEmail(email:string) {
 }
 
 const userRepository = {
-    findFirst,
     findFirstWithEmail
 }
 

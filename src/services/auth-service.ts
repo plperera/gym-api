@@ -1,11 +1,12 @@
 import { conflictError, requestError, unauthorizedError } from "@/errors"
-import authRepository from "@/repositories/auth-repository/auth-repository"
-import userRepository from "@/repositories/user-repository/user-respository"
+import authRepository from "@/repositories/auth-repository"
+import userRepository from "@/repositories/user-respository"
 import httpStatus from "http-status"
-import { signUpBody } from "../../factories/auth-factory"
 import bcrypt from 'bcrypt'
 import jwt from "jsonwebtoken";
 import { sessions, users } from ".prisma/client"
+import { signUpBody } from "@/schemas/signupSCHEMA"
+
 
 async function createNewUser(body: Omit<signUpBody, "passwordVerify">){
 
@@ -32,7 +33,7 @@ async function verifyAccees(body: {email:string, password:string}){
 
         const hasAccess = await userRepository.findFirstWithEmail(body.email)
         
-        if(!hasAccess || hasAccess.isActive !== true){
+        if(!hasAccess || hasAccess.isActived !== true){
             throw unauthorizedError()
         }   
 

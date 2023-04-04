@@ -1,10 +1,10 @@
-import { signupSCHEMA } from "@/schemas/signupSCHEMA";
+import { signUpBody, signupSCHEMA } from "@/schemas/signupSCHEMA";
 import { signInSCHEMA } from "@/schemas/signInSCHEMA";
-import authService from "@/services/auth-service/auth-service";
+import authService from "@/services/auth-service";
+
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import bcrypt from 'bcrypt';
-import { signUpBody } from "../factories/auth-factory";
 import { sessions, users } from ".prisma/client";
 
 export async function signUp(req: Request, res: Response){
@@ -17,16 +17,15 @@ export async function signUp(req: Request, res: Response){
             return res.sendStatus(httpStatus.BAD_REQUEST)
         }
         
-        const { email, name, password, passwordVerify } = req.body
-
-        const body: Omit<signUpBody, "passwordVerify"> = {
-            email, 
-            name, 
-            password: bcrypt.hashSync(password, 10), 
-        }
+        const { email, password, passwordVerify } = req.body
         
         if(password !== passwordVerify){
             return res.sendStatus(httpStatus.BAD_REQUEST)
+        }
+
+        const body: Omit<signUpBody, "passwordVerify"> = {
+            email, 
+            password: bcrypt.hashSync(password, 10), 
         }
         
         const newUser = await authService.createNewUser(body)
@@ -67,11 +66,8 @@ export async function signIn(req: Request, res: Response) {
         const validAccess: sessions = await authService.validAccess(hasAccess)
 
         const userBody = {
-
             id: hasAccess.id,
             email: hasAccess.email,
-            name: hasAccess.name,
-
         }
 
         return res.send({user: userBody, token:validAccess.token}).status(httpStatus.OK)
