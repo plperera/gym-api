@@ -1,12 +1,13 @@
 import { signIn, signUp } from '@/controllers/auth-controller'
+import { newProduct } from '@/controllers/product-controller'
 import { authenticateToken } from '@/middlewares/authentication-middlerare'
 import { Router } from 'express'
 
-const authRouter = Router()
+const productRouter = Router()
 
-authRouter
+productRouter
     .all("/*", authenticateToken)
-    .post("", signUp)
+    .post("", newProduct)
     .delete("/", signIn)
 
-export { authRouter }
+export { productRouter }

@@ -6,6 +6,7 @@ import cors from "cors";
 import { loadEnv, connectDb, disconnectDB } from "./config";
 import { authRouter } from "./routers/auth-router";
 import { categoryRouter } from "./routers/category-router";
+import { productRouter } from "./routers/product-router";
 
 loadEnv();
 
@@ -15,7 +16,7 @@ app
   .use(express.json())
   .use("/auth", authRouter)
   .use("/category", categoryRouter)
-  .use("/product", categoryRouter)
+  .use("/product", productRouter)
   .get("/health", (_req, res) => res.send("OK!"))
 
 export function init(): Promise<Express> {

@@ -1,40 +1,47 @@
-import { signUpBody, signupSCHEMA } from "@/schemas/signupSCHEMA";
-import { signInSCHEMA } from "@/schemas/signInSCHEMA";
-import authService from "@/services/auth-service";
-
-import { Request, Response } from "express";
+import { Response } from "express";
 import httpStatus from "http-status";
-import bcrypt from 'bcrypt';
-import { sessions, users } from ".prisma/client";
+import categoryService from "@/services/category-service";
+import { newProductBody, newProductSCHEMA } from "@/schemas/newProductSCHEMA";
+import productService from "@/services/product-service";
+import { AuthenticatedRequest } from "@/middlewares/authentication-middlerare";
 
-export async function newProduct(req: Request, res: Response){
+export async function newProduct(req: AuthenticatedRequest, res: Response){
 
     try {
-        /*
-        const isValid = signupSCHEMA.validate(req.body, {abortEarly: false})
+        
+        const isValid = newProductSCHEMA.validate(req.body, {abortEarly: false})
 
         if(isValid.error){
             return res.sendStatus(httpStatus.BAD_REQUEST)
         }
-        */
-        const { email, password, passwordVerify } = req.body
+
+        const { nome, categorias }: newProductBody = req.body
+        const { userId } = req
         
-        if(password !== passwordVerify){
-            return res.sendStatus(httpStatus.BAD_REQUEST)
+        const verifyName = await productService.verifyName(nome)
+
+        if(verifyName){
+            res.sendStatus(httpStatus.CONFLICT)
         }
 
-        const body: Omit<signUpBody, "passwordVerify"> = {
-            email, 
-            password: bcrypt.hashSync(password, 10), 
-        }
-        
-        const newUser = await authService.createNewUser(body)
+        categorias.map(async (e) => {
 
-        if(newUser.id){
-            return res.sendStatus(httpStatus.CREATED)
+            const categoryVerify = await categoryService.verify(e.tipo)
+
+            if (!categoryVerify) {
+                res.sendStatus(httpStatus.BAD_REQUEST)
+            }
+
+        })
+
+        const newProduct = await productService.create({body: req.body, userId})
+
+        if(newProduct) {
+            res.status(httpStatus.CREATED).send(newProduct)
         } else {
-            return res.sendStatus(httpStatus.CONFLICT)
+            res.status(httpStatus.OK).send(newProduct)
         }
+        
 
     } catch (error) {
         if(error.name === "ConflictError") {
@@ -46,49 +53,9 @@ export async function newProduct(req: Request, res: Response){
           if (error.name === "ForbiddenError") {
             return res.status(httpStatus.FORBIDDEN).send(error);
           }
-          return res.sendStatus(httpStatus.NOT_FOUND);
+          console.log(error)
+          return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
     }
 }
 
-export async function deleteProduct(req: Request, res: Response) {
-    try {
-
-        const isValid = signInSCHEMA.validate(req.body, {abortEarly: false})
-
-        if(isValid.error){
-            return res.sendStatus(httpStatus.BAD_REQUEST)
-        }
-        
-        const { email, password } = req.body
-        
-        const hasAccess: users = await authService.verifyAccees({ email, password })
-        
-        const validAccess: sessions = await authService.validAccess(hasAccess)
-
-        const userBody = {
-            id: hasAccess.id,
-            email: hasAccess.email,
-        }
-
-        return res.send({user: userBody, token:validAccess.token}).status(httpStatus.OK)
-        
-
-    } catch (error) {
-
-        if (error.name === "UnauthorizedError") {
-            return res.status(httpStatus.UNAUTHORIZED);
-          }
-        if(error.name === "ConflictError") {
-            res.sendStatus(httpStatus.CONFLICT);
-          }
-        if (error.name === "NotFoundError") {
-            return res.status(httpStatus.NOT_FOUND).send(error);
-        }
-        if (error.name === "ForbiddenError") {
-            return res.status(httpStatus.FORBIDDEN).send(error);
-        }
-          
-        return res.sendStatus(httpStatus.UNAUTHORIZED);
-    }
-}
 
