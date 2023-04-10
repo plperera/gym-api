@@ -22,11 +22,30 @@ async function findAllValid() {
         }
     });
 }
+async function deleteByType(type: string) {
+    return prisma.categorias.delete({
+        where:{
+            tipo: type
+        }
+    });
+}
+async function changeActiveStatusByType({type, newStatus}:{type: string, newStatus: boolean}) {
+    return prisma.categorias.update({
+        where: {
+            tipo: type,
+          },
+          data: {
+            isActived: newStatus,
+          },
+    });
+}
 
 const categoryRepository = {
     findByType,
     create,
-    findAllValid
+    findAllValid,
+    deleteByType,
+    changeActiveStatusByType
 }
 
 export default categoryRepository
