@@ -98,7 +98,6 @@ export async function deleteCategoryByType(req: Request, res: Response){
     }
 }
 export async function changeActiveStatusCategoryByType(req: Request, res: Response){
-
     try { 
 
         const isValid = deleteCategorySCHEMA.validate(req.body, {abortEarly: false})

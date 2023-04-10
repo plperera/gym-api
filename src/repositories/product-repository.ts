@@ -50,16 +50,38 @@ async function findAll() {
               },
             },
             imagensProduto: true,
+        },
+        where: {
+            isActived: true
         }
     });
 }
+async function changeActiveStatus(body:{ id: number, nome: string, newStatus: boolean }) {
+    return prisma.produtos.updateMany({
+        where: {
+          AND: [
+            {
+              id: body.id,
+            },
+            {
+              nome: body.nome,
+            },
+          ],
+        },
+        data: {
+          isActived: body.newStatus,
+        },
+    });
+}
+
 
 const productRepository = {
     findByName,
     create,
     createProductCategory,
     createProductImage,
-    findAll
+    findAll,
+    changeActiveStatus
 }
 
 export default productRepository

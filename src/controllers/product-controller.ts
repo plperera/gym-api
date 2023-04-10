@@ -1,9 +1,10 @@
-import { Response } from "express";
+import { Response, Request } from "express";
 import httpStatus from "http-status";
 import categoryService from "@/services/category-service";
 import { newProductBody, newProductSCHEMA } from "@/schemas/newProductSCHEMA";
 import productService from "@/services/product-service";
 import { AuthenticatedRequest } from "@/middlewares/authentication-middlerare";
+import { deleteProductBody, deleteProductSCHEMA } from "@/schemas/deleteProductSCHEMA";
 
 export async function newProduct(req: AuthenticatedRequest, res: Response){
     try {
@@ -66,6 +67,28 @@ export async function getAllProducts(req: AuthenticatedRequest, res: Response){
 
         res.status(httpStatus.CREATED).send(getAllProducts)
      
+
+    } catch (error) {
+        return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+
+export async function changeActiveStatus(req: Request, res: Response){
+    try { 
+
+        const isValid = deleteProductSCHEMA.validate(req.body, {abortEarly: false})
+
+        if(isValid.error){
+            return res.sendStatus(httpStatus.BAD_REQUEST)
+        }
+
+        const { id, nome }: deleteProductBody = req.body
+
+        const product = await productService.verifyName(nome)
+
+        await productService.changeProductStatus({ id, nome, newStatus: !product.isActived })
+
+        return res.sendStatus(httpStatus.OK)
 
     } catch (error) {
         return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
