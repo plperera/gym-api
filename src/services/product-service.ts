@@ -40,9 +40,14 @@ async function create({body , userId }: {body: newProductBody, userId: number}){
     return newProduct
     
 }
+async function getAllProducts(){
+    const allProducts = await productRepository.findAll()
+    return allProducts
+}
 const productService = {
     verifyName,
-    create
+    create,
+    getAllProducts
 }
 
 export default productService

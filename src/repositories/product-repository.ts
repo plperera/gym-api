@@ -41,12 +41,25 @@ async function createProductImage({imageName, productId}: {imageName: string, pr
         },
     });
 }
+async function findAll() {
+    return prisma.produtos.findMany({
+        include: {
+            categoriasProduto: {
+              include: {
+                categorias: true,
+              },
+            },
+            imagensProduto: true,
+        }
+    });
+}
 
 const productRepository = {
     findByName,
     create,
     createProductCategory,
-    createProductImage
+    createProductImage,
+    findAll
 }
 
 export default productRepository

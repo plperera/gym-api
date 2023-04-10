@@ -6,7 +6,6 @@ import productService from "@/services/product-service";
 import { AuthenticatedRequest } from "@/middlewares/authentication-middlerare";
 
 export async function newProduct(req: AuthenticatedRequest, res: Response){
-
     try {
         
         const isValid = newProductSCHEMA.validate(req.body, {abortEarly: false})
@@ -60,4 +59,15 @@ export async function newProduct(req: AuthenticatedRequest, res: Response){
     }
 }
 
+export async function getAllProducts(req: AuthenticatedRequest, res: Response){
+    try {
+        
+        const getAllProducts = await productService.getAllProducts()
 
+        res.status(httpStatus.CREATED).send(getAllProducts)
+     
+
+    } catch (error) {
+        return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
