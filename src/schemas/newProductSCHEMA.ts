@@ -12,7 +12,30 @@ export type newProductBody = {
         id: number,
         tipo: string 
     }[]
+    imagens: {
+        nome: string 
+    }[]
 }
+type categorias = {
+    id: number,
+    tipo: string
+}
+type imagesBody = {
+    nome: string
+}
+
+const newProductCategoriasSCHEMA = joi.object<categorias>({
+
+    id: joi.number().required(),
+    tipo: joi.string().required().min(4)
+
+})
+
+const newProductImagesBodySCHEMA = joi.object<imagesBody>({
+
+    nome: joi.string().required()
+
+})
 
 const newProductSCHEMA = joi.object<newProductBody>({
 
@@ -23,7 +46,8 @@ const newProductSCHEMA = joi.object<newProductBody>({
     altura: joi.number().required(),
     comprimento: joi.number(),
     peso: joi.number(),
-    categorias: joi.array().required()
+    categorias: joi.array().items(newProductCategoriasSCHEMA).required(),
+    imagens: joi.array().items(newProductImagesBodySCHEMA).required(),
 
 })
 

@@ -19,14 +19,24 @@ async function verifyName(name: string){
 }
 async function create({body , userId }: {body: newProductBody, userId: number}){
     
+    const { categorias, imagens } = body
+
+    if (categorias.length === 0 || imagens.length === 0){
+        return undefined
+    }
+
     const newProduct = await productRepository.create({ body , userId: 2})
 
-    const { categorias } = body
-
     categorias.map( async (e) => {
-        await productRepository.createProductCategory({ productId: newProduct.id, categoryId: e.id})
+        const response = await productRepository.createProductCategory({ productId: newProduct.id, categoryId: e.id})
+        console.log(response)
     })
-
+    
+    imagens.map( async (e) => {
+        const response = await productRepository.createProductImage({imageName: e.nome, productId: newProduct.id})
+        console.log(response)
+    })
+    
     return newProduct
     
 }

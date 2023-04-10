@@ -33,12 +33,20 @@ async function createProductCategory({ productId, categoryId }: { productId: num
         },
     });
 }
-
+async function createProductImage({imageName, productId}: {imageName: string, productId: number}) {
+    return prisma.imagensProduto.create({
+        data: {
+            produtoId: productId,
+            imageRef: imageName
+        },
+    });
+}
 
 const productRepository = {
     findByName,
     create,
-    createProductCategory
+    createProductCategory,
+    createProductImage
 }
 
 export default productRepository

@@ -20,8 +20,10 @@ export async function newProduct(req: AuthenticatedRequest, res: Response){
         
         const verifyName = await productService.verifyName(nome)
 
+        console.log(verifyName)
+
         if(verifyName){
-            res.sendStatus(httpStatus.CONFLICT)
+            return res.sendStatus(httpStatus.CONFLICT)
         }
 
         categorias.map(async (e) => {
@@ -39,7 +41,7 @@ export async function newProduct(req: AuthenticatedRequest, res: Response){
         if(newProduct) {
             res.status(httpStatus.CREATED).send(newProduct)
         } else {
-            res.status(httpStatus.OK).send(newProduct)
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).send(newProduct)
         }
         
 
