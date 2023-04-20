@@ -1,14 +1,16 @@
 import { signIn, signUp } from '@/controllers/auth-controller'
-import { changeActiveStatus, getAllProducts, newProduct } from '@/controllers/product-controller'
+import { changeActiveStatus, getAllProducts, newProduct, getProductById } from '@/controllers/product-controller'
 import { authenticateToken } from '@/middlewares/authentication-middlerare'
 import { Router } from 'express'
 
 const productRouter = Router()
 
 productRouter
+    .get("/", getAllProducts)
+    .get("/:productId", getProductById)
+
     .all("/*", authenticateToken)
     .post("", newProduct)
-    .get("/", getAllProducts)
     .put("/", changeActiveStatus)
 
 export { productRouter }

@@ -44,6 +44,10 @@ async function getAllProducts(){
     const allProducts = await productRepository.findAll()
     return allProducts
 }
+async function getProductById(productId: number){
+    const allProducts = await productRepository.findById(productId)
+    return allProducts
+}
 async function changeProductStatus(body:{ id: number, nome: string, newStatus: boolean }){
     try {
         const putResponse = await productRepository.changeActiveStatus(body)
@@ -57,7 +61,8 @@ const productService = {
     verifyName,
     create,
     getAllProducts,
-    changeProductStatus
+    changeProductStatus,
+    getProductById
 }
 
 export default productService

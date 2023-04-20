@@ -94,3 +94,19 @@ export async function changeActiveStatus(req: Request, res: Response){
         return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+export async function getProductById(req: Request, res: Response){
+    try { 
+        const { productId } = req.params
+
+        if (typeof Number(productId) !== "number"){
+            res.sendStatus(httpStatus.BAD_REQUEST)
+        }
+
+        const result = await productService.getProductById(Number(productId))
+
+        return res.status(httpStatus.OK).send(result)
+
+    } catch (error) {
+        return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    }
+}

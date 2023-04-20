@@ -9,7 +9,6 @@ async function findByName(name: string) {
         }
     });
 }
-
 async function create({body, userId}:{body: newProductBody, userId: number}) {
     return prisma.produtos.create({
         data: {
@@ -24,7 +23,6 @@ async function create({body, userId}:{body: newProductBody, userId: number}) {
           },
     });
 }
-
 async function createProductCategory({ productId, categoryId }: { productId: number, categoryId: number }) {
     return prisma.categoriasProduto.create({
         data: {
@@ -56,6 +54,21 @@ async function findAll() {
         }
     });
 }
+async function findById(productId: number) {
+    return prisma.produtos.findFirst({
+        include: {
+            categoriasProduto: {
+              include: {
+                categorias: true,
+              },
+            },
+            imagensProduto: true,
+        },
+        where: {
+            id: productId
+        }
+    });
+}
 async function changeActiveStatus(body:{ id: number, nome: string, newStatus: boolean }) {
     return prisma.produtos.updateMany({
         where: {
@@ -81,7 +94,8 @@ const productRepository = {
     createProductCategory,
     createProductImage,
     findAll,
-    changeActiveStatus
+    changeActiveStatus,
+    findById
 }
 
 export default productRepository

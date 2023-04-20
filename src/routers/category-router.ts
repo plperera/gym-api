@@ -5,8 +5,9 @@ import { Router } from 'express'
 const categoryRouter = Router()
 
 categoryRouter
-    .all("/*", authenticateToken)
     .get("", getAllCategory)
+    
+    .all("/*", authenticateToken)
     .post("", newCategory)
     .put("", changeActiveStatusCategoryByType)
     .delete("", deleteCategoryByType)
