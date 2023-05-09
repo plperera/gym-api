@@ -5,6 +5,7 @@ import { newProductBody, newProductSCHEMA } from "@/schemas/newProductSCHEMA";
 import productService from "@/services/product-service";
 import { AuthenticatedRequest } from "@/middlewares/authentication-middlerare";
 import { deleteProductBody, deleteProductSCHEMA } from "@/schemas/deleteProductSCHEMA";
+import { putProductBody, putProductSCHEMA } from "@/schemas/putProduct";
 
 export async function newProduct(req: AuthenticatedRequest, res: Response){
     try {
@@ -73,20 +74,17 @@ export async function getAllProducts(req: AuthenticatedRequest, res: Response){
     }
 }
 
-export async function changeActiveStatus(req: Request, res: Response){
+export async function putProduct(req: Request, res: Response){
     try { 
 
-        const isValid = deleteProductSCHEMA.validate(req.body, {abortEarly: false})
+        const isValid = putProductSCHEMA.validate(req.body, {abortEarly: false})
 
         if(isValid.error){
+            console.log(isValid.error)
             return res.sendStatus(httpStatus.BAD_REQUEST)
         }
 
-        const { id, nome }: deleteProductBody = req.body
-
-        const product = await productService.verifyName(nome)
-
-        await productService.changeProductStatus({ id, nome, newStatus: !product.isActived })
+        const product = await productService.putProduct(req.body)
 
         return res.sendStatus(httpStatus.OK)
 

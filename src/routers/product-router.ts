@@ -1,5 +1,5 @@
 import { signIn, signUp } from '@/controllers/auth-controller'
-import { changeActiveStatus, getAllProducts, newProduct, getProductById } from '@/controllers/product-controller'
+import { putProduct, getAllProducts, newProduct, getProductById } from '@/controllers/product-controller'
 import { authenticateToken } from '@/middlewares/authentication-middlerare'
 import { Router } from 'express'
 
@@ -11,6 +11,6 @@ productRouter
 
     .all("/*", authenticateToken)
     .post("", newProduct)
-    .put("/", changeActiveStatus)
+    .put("/", putProduct)
 
 export { productRouter }

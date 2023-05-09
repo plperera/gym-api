@@ -1,4 +1,4 @@
-import { conflictError, requestError, unauthorizedError } from "@/errors"
+import { conflictError, notFoundError, requestError, unauthorizedError } from "@/errors"
 import authRepository from "@/repositories/auth-repository"
 import userRepository from "@/repositories/user-respository"
 import httpStatus from "http-status"
@@ -7,6 +7,7 @@ import categoryRepository from "@/repositories/category-repository"
 import { categorias } from "@prisma/client"
 import productRepository from "@/repositories/product-repository"
 import { newProductBody } from "@/schemas/newProductSCHEMA"
+import { putProductBody } from "@/schemas/putProduct"
 
 
 async function verifyName(name: string){
@@ -57,12 +58,39 @@ async function changeProductStatus(body:{ id: number, nome: string, newStatus: b
     }
 
 }
+async function putProduct(body: putProductBody){
+    try {
+
+        const hasProduct = await productRepository.findById(body.id)
+
+        if (!hasProduct) {
+            throw notFoundError()
+        }
+
+        const { imagens, id } = body
+    
+        await productRepository.deleteProductImage(id)
+
+        imagens.map( async (e) => {
+            const response = await productRepository.createProductImage({imageName: e.nome, productId: id})
+            console.log(response)
+        })
+        
+        const newProduct = await productRepository.putProduct(body)
+        return newProduct
+        
+        
+    } catch (error) {
+        return error
+    }
+}
 const productService = {
     verifyName,
     create,
     getAllProducts,
     changeProductStatus,
-    getProductById
+    getProductById,
+    putProduct
 }
 
 export default productService

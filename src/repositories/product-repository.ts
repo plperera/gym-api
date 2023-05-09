@@ -1,6 +1,7 @@
 import { prisma } from "@/config";
 import { newCategoryBody } from "@/schemas/newCategorySCHEMA";
 import { newProductBody } from "@/schemas/newProductSCHEMA";
+import { putProductBody } from "@/schemas/putProduct";
 
 async function findByName(name: string) {
     return prisma.produtos.findFirst({
@@ -36,6 +37,13 @@ async function createProductImage({imageName, productId}: {imageName: string, pr
         data: {
             produtoId: productId,
             imageRef: imageName
+        },
+    });
+}
+async function deleteProductImage( productId : number ) {
+    return prisma.imagensProduto.deleteMany({
+        where: {
+            produtoId: productId,
         },
     });
 }
@@ -86,6 +94,23 @@ async function changeActiveStatus(body:{ id: number, nome: string, newStatus: bo
         },
     });
 }
+async function putProduct(body: putProductBody) {
+    return prisma.produtos.update({
+        where: {
+          id: body.id
+        },
+        data: {
+          nome: body.nome,
+          rate: body.rate,
+          descricao: body.descricao,
+          largura: body.largura,
+          comprimento: body.comprimento,
+          altura: body.altura,
+          peso: body.peso,
+        },
+    });
+}
+
 
 
 const productRepository = {
@@ -95,7 +120,9 @@ const productRepository = {
     createProductImage,
     findAll,
     changeActiveStatus,
-    findById
+    findById,
+    deleteProductImage,
+    putProduct
 }
 
 export default productRepository
