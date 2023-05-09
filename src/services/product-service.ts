@@ -84,13 +84,30 @@ async function putProduct(body: putProductBody){
         return error
     }
 }
+async function deleteProduct(productId: number){
+    try {
+
+        const hasProduct = await productRepository.findById(productId)
+
+        if (!hasProduct) {
+            throw notFoundError()
+        }
+        const result = await productRepository.deleteProduct(productId)
+        return result
+        
+        
+    } catch (error) {
+        return error
+    }
+}
 const productService = {
     verifyName,
     create,
     getAllProducts,
     changeProductStatus,
     getProductById,
-    putProduct
+    putProduct,
+    deleteProduct
 }
 
 export default productService

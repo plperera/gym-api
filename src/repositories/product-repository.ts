@@ -110,6 +110,13 @@ async function putProduct(body: putProductBody) {
         },
     });
 }
+async function deleteProduct(productId: number) {
+    return prisma.produtos.delete({
+      where: {
+        id: productId,
+      },
+    });
+  }
 
 
 
@@ -122,7 +129,8 @@ const productRepository = {
     changeActiveStatus,
     findById,
     deleteProductImage,
-    putProduct
+    putProduct,
+    deleteProduct
 }
 
 export default productRepository

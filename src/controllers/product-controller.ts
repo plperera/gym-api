@@ -80,7 +80,6 @@ export async function putProduct(req: Request, res: Response){
         const isValid = putProductSCHEMA.validate(req.body, {abortEarly: false})
 
         if(isValid.error){
-            console.log(isValid.error)
             return res.sendStatus(httpStatus.BAD_REQUEST)
         }
 
@@ -101,6 +100,19 @@ export async function getProductById(req: Request, res: Response){
         }
 
         const result = await productService.getProductById(Number(productId))
+
+        return res.status(httpStatus.OK).send(result)
+
+    } catch (error) {
+        return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+
+export async function deleteProductById(req: Request, res: Response){
+    try { 
+        const { id } = req.body
+
+        const result = await productService.deleteProduct(Number(id))
 
         return res.status(httpStatus.OK).send(result)
 
