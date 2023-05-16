@@ -7,7 +7,7 @@
     "prebuild": "rimraf  dist",
     "build": "tsc -p tsconfig.build.json",
     "prepare": "husky install",
-    "start": "node dist/server.js",
+    "start": "npm run migration:run && node dist/server.js",
     "migration:run": "prisma migrate deploy",
     "migration:generate": "npm run dev:load-envs prisma migrate dev",
     "lint": "eslint .",
@@ -23,7 +23,6 @@
     "dev:migration:run": "npm run dev:load-envs prisma migrate deploy",
     "dev:migration:generate": "npm run dev:load-envs prisma migrate dev",
     "dev": "set NODE_ENV=development && nodemon --watch src/ --exec \"ts-node -r tsconfig-paths/register ./src/server.ts\" -e ts"
-
   },
   "keywords": [
     "driven.t",
@@ -34,6 +33,9 @@
     "express",
     "nodejs"
   ],
+  "_moduleAliases": {
+    "@": "dist"
+  },
   "author": "Alexandre Nunes",
   "license": "ISC",
   "devDependencies": {
@@ -52,7 +54,7 @@
     "prisma": "^3.14.0",
     "rimraf": "^4.4.1",
     "supertest": "^6.2.3",
-    "ts-jest": "^26.5.5",
+    "ts-jest": "29.1.0",
     "ts-node": "^10.7.0",
     "tsconfig-paths": "3.9.0",
     "ttypescript": "^1.5.13",
@@ -74,6 +76,7 @@
     "http-status": "^1.5.2",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
     "reflect-metadata": "^0.1.13"
   }
 }
