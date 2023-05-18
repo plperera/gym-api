@@ -27,7 +27,7 @@ export async function signUp(req: Request, res: Response){
             email, 
             password: bcrypt.hashSync(password, 10), 
         }
-        
+    
         const newUser = await authService.createNewUser(body)
 
         if(newUser.id){

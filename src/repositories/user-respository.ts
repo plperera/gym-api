@@ -8,8 +8,14 @@ async function findFirstWithEmail(email:string) {
     });
 }
 
+async function findAll() {
+    return prisma.users.findMany({
+    });
+}
+
 const userRepository = {
-    findFirstWithEmail
+    findFirstWithEmail,
+    findAll
 }
 
 export default userRepository

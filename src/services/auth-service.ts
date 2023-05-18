@@ -17,6 +17,12 @@ async function createNewUser(body: Omit<signUpBody, "passwordVerify">){
         if(hasUser){
             throw conflictError()
         }
+
+        const allUsers = await userRepository.findAll()
+
+        if ( allUsers.length >= 1){
+            throw conflictError()
+        }
         
         const newUser = await authRepository.insertNewUser(body)    
 
