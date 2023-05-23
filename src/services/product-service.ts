@@ -26,7 +26,7 @@ async function create({body , userId }: {body: newProductBody, userId: number}){
         return undefined
     }
 
-    const newProduct = await productRepository.create({ body , userId: 2})
+    const newProduct = await productRepository.create({ body , userId })
 
     categorias.map( async (e) => {
         const response = await productRepository.createProductCategory({ productId: newProduct.id, categoryId: e.id})
