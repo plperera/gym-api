@@ -11,8 +11,8 @@ const credentials: https.ServerOptions = { key: privateKey, cert: certificate };
 const httpsServer = https.createServer(credentials, app);
 
 init().then(() => {
-  app.listen(port, () => {
+  httpsServer.listen(port, () => {
     /* eslint-disable-next-line no-console */
-    console.log(`Estou de olho na porta: ${port}!!!`);
+    console.log(`HTTPS Server running on port: ${port}!!!`);
   });
 });
