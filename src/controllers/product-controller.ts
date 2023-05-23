@@ -17,7 +17,7 @@ export async function newProduct(req: AuthenticatedRequest, res: Response){
         }
 
         const { nome, categorias }: newProductBody = req.body
-        const { userId } = req
+        const userId = 1
         
         const verifyName = await productService.verifyName(nome)
 
