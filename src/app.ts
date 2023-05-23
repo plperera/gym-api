@@ -13,7 +13,13 @@ loadEnv();
 
 const app = express();
 app
-  .use(cors())
+  app.use(cors({
+    origin: 'https://www.upsportbrasil.com.br',  // Altere isso para seu domínio
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+    credentials: true  // Isso permite que cookies sejam enviados.
+  }))
   .use(express.json())
   .use("/auth", authRouter)
   .use("/category", categoryRouter)
