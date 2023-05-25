@@ -101,7 +101,13 @@ export async function getProductById(req: Request, res: Response){
 
         const result = await productService.getProductById(Number(productId))
 
-        return res.status(httpStatus.OK).send(result)
+        let sendResponse : any = result
+
+        if (!result){
+            sendResponse = []
+        }
+
+        return res.status(httpStatus.OK).send(sendResponse)
 
     } catch (error) {
         return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
