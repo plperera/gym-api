@@ -1,15 +1,27 @@
-import { conflictError, requestError, unauthorizedError } from "@/errors"
+import { conflictError, notFoundError, requestError, unauthorizedError } from "@/errors"
 import authRepository from "@/repositories/auth-repository"
 import userRepository from "@/repositories/user-respository"
 import httpStatus from "http-status"
 import { newCategoryBody } from "@/schemas/newCategorySCHEMA"
 import categoryRepository from "@/repositories/category-repository"
 import { categorias } from "@prisma/client"
+import { updateCategoryBody } from "@/schemas/updateCategorySCHEMA"
 
 
 async function verify(type: string){
     try {
         const hasCategory = await categoryRepository.findByType(type)
+
+        return hasCategory
+
+    } catch (error) {
+        return error
+    }
+
+}
+async function verifyById(id: number){
+    try {
+        const hasCategory = await categoryRepository.find(id)
 
         return hasCategory
 
@@ -40,11 +52,12 @@ async function getAllValidCategories(){
     }
 
 }
-async function deleteByType(type: string){
+async function deleteCategory(id: number){
     try {
 
-        const deleteResponse = await categoryRepository.deleteByType(type)
-        return deleteResponse
+        await categoryRepository.removeProductCategory(id)
+        await categoryRepository.deleteCategory(id)
+        return 
 
     } catch (error) {
         return error
@@ -62,12 +75,32 @@ async function changeActiveStatusByType({type, newStatus}:{type: string, newStat
     }
 
 }
+async function updateCategory({ type, id }: updateCategoryBody){
+    try {
+
+        const hasCategory = await categoryRepository.find(id)
+
+        if(!hasCategory) {
+            throw notFoundError()
+        }
+
+        const result = await categoryRepository.update({ type, id })
+
+        return result
+
+    } catch (error) {
+        return error
+    }
+
+}
 const categoryService = {
     verify,
     create,
+    deleteCategory,
     getAllValidCategories,
-    deleteByType,
-    changeActiveStatusByType
+    changeActiveStatusByType,
+    updateCategory,
+    verifyById
 }
 
 export default categoryService

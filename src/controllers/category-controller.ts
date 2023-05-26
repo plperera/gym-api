@@ -3,8 +3,9 @@ import httpStatus from "http-status";
 import bcrypt from 'bcrypt';
 import { newCategoryBody, newCategorySCHEMA } from "@/schemas/newCategorySCHEMA";
 import categoryService from "@/services/category-service";
-import { deleteCategoryBody, deleteCategorySCHEMA } from "@/schemas/deleteCategorySCHEMA";
+import { updateCategoryBody, updateCategorySCHEMA } from "@/schemas/updateCategorySCHEMA";
 import { categorias } from "@prisma/client";
+import { deleteCategoryBody, deleteCategorySCHEMA } from "@/schemas/deleteCategorySCHEMA";
 
 export async function newCategory(req: Request, res: Response){
 
@@ -63,7 +64,7 @@ export async function getAllCategory(req: Request, res: Response){
           return res.sendStatus(httpStatus.NOT_FOUND);
     }
 }
-export async function deleteCategoryByType(req: Request, res: Response){
+export async function deleteCategory(req: Request, res: Response){
 
     try { 
 
@@ -73,16 +74,18 @@ export async function deleteCategoryByType(req: Request, res: Response){
             return res.sendStatus(httpStatus.BAD_REQUEST)
         }
         
-        const { type }: deleteCategoryBody = req.body
+        const { id }: deleteCategoryBody = req.body
 
-        const verifyCategory = await categoryService.verify(type)
+        const verifyCategory = await categoryService.verifyById(id)
 
         if(!verifyCategory){
-            res.sendStatus(httpStatus.BAD_REQUEST)
-        } else {
-            await categoryService.deleteByType(type)
-            return res.sendStatus(httpStatus.OK)
-        }
+            res.sendStatus(httpStatus.NOT_FOUND)
+        } 
+
+        await categoryService.deleteCategory(id)
+
+        return res.sendStatus(httpStatus.OK)
+        
 
     } catch (error) {
         if(error.name === "ConflictError") {
@@ -97,27 +100,26 @@ export async function deleteCategoryByType(req: Request, res: Response){
           return res.sendStatus(httpStatus.NOT_FOUND);
     }
 }
-export async function changeActiveStatusCategoryByType(req: Request, res: Response){
+export async function updateCategory(req: Request, res: Response){
     try { 
 
-        const isValid = deleteCategorySCHEMA.validate(req.body, {abortEarly: false})
+        const isValid = updateCategorySCHEMA.validate(req.body, {abortEarly: false})
 
         if(isValid.error){
             return res.sendStatus(httpStatus.BAD_REQUEST)
         }
         
-        const { type }: deleteCategoryBody = req.body
+        const { type, id }: updateCategoryBody = req.body
 
-        const verifyCategory: categorias = await categoryService.verify(type)
+        const hasCategory = await categoryService.verify(type)
 
-        if(!verifyCategory){
-            res.sendStatus(httpStatus.BAD_REQUEST)
-        } else {
-
-            await categoryService.changeActiveStatusByType({type, newStatus: !verifyCategory.isActived })
-            return res.sendStatus(httpStatus.OK)
-
+        if (hasCategory) {
+            res.sendStatus(httpStatus.FORBIDDEN)
         }
+
+        const result = await categoryService.updateCategory({ type, id })
+
+        res.status(httpStatus.OK).send(result)
 
     } catch (error) {
         if(error.name === "ConflictError") {

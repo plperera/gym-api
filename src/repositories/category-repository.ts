@@ -1,4 +1,5 @@
 import { prisma } from "@/config";
+import { updateCategoryBody } from "@/schemas/updateCategorySCHEMA";
 import { newCategoryBody } from "@/schemas/newCategorySCHEMA";
 
 async function findByType(type: string) {
@@ -22,6 +23,13 @@ async function findAllValid() {
         }
     });
 }
+async function find(id: number) {
+    return prisma.categorias.findFirst({
+        where:{
+            id: id
+        }
+    });
+}
 async function deleteByType(type: string) {
     return prisma.categorias.delete({
         where:{
@@ -39,13 +47,41 @@ async function changeActiveStatusByType({type, newStatus}:{type: string, newStat
           },
     });
 }
+async function update({type, id}: updateCategoryBody) {
+    return prisma.categorias.update({
+        where: {
+            id: id,
+          },
+          data: {
+            tipo: type,
+          },
+    });
+}
+async function removeProductCategory(id: number) {
+    return prisma.categoriasProduto.deleteMany({
+        where: {
+            id: id,
+        }
+    });
+}
+async function deleteCategory(id: number) {
+    return prisma.categorias.delete({
+        where: {
+            id: id,
+        }
+    });
+}
 
 const categoryRepository = {
     findByType,
+    find,
     create,
+    update,
     findAllValid,
     deleteByType,
-    changeActiveStatusByType
+    changeActiveStatusByType,
+    removeProductCategory,
+    deleteCategory
 }
 
 export default categoryRepository

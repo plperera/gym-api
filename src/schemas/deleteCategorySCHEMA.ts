@@ -1,12 +1,12 @@
 import joi from "joi"
 
 export type deleteCategoryBody = {
-    type: string,
+    id: number
 }
 
 const deleteCategorySCHEMA = joi.object<deleteCategoryBody>({
 
-    type: joi.string().required().min(2)
+    id: joi.number().required()
 
 })
 
