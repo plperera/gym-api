@@ -49,7 +49,7 @@ export async function getAllCategory(req: Request, res: Response){
     try {        
         const allCategories = await categoryService.getAllValidCategories()
 
-        return res.status(httpStatus.CREATED).send(allCategories)
+        return res.status(httpStatus.OK).send(allCategories)
 
     } catch (error) {
         if(error.name === "ConflictError") {
