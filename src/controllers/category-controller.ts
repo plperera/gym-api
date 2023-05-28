@@ -66,7 +66,7 @@ export async function getAllCategory(req: Request, res: Response){
 }
 export async function getCategoryById(req: Request, res: Response){
   try { 
-  const id = Number(req.params)
+  const id = Number(req.params.categoryId)
 
   const result = await categoryService.verifyById(id)
 
