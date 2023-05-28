@@ -64,6 +64,27 @@ export async function getAllCategory(req: Request, res: Response){
           return res.sendStatus(httpStatus.NOT_FOUND);
     }
 }
+export async function getCategoryById(req: Request, res: Response){
+  try { 
+  const id = Number(req.params)
+
+  const result = await categoryService.verifyById(id)
+
+  return res.status(httpStatus.OK).send(result)
+
+  } catch (error) {
+      if(error.name === "ConflictError") {
+          res.sendStatus(httpStatus.CONFLICT);
+        }
+        if (error.name === "NotFoundError") {
+          return res.status(httpStatus.NOT_FOUND).send(error);
+        }
+        if (error.name === "ForbiddenError") {
+          return res.status(httpStatus.FORBIDDEN).send(error);
+        }
+        return res.sendStatus(httpStatus.NOT_FOUND);
+  }
+}
 export async function deleteCategory(req: Request, res: Response){
 
     try { 
