@@ -60,9 +60,9 @@ async function changeProductStatus(body:{ id: number, nome: string, newStatus: b
 }
 async function putProduct(body: putProductBody){
     const newImages: string[] = []
-    body.imagens.map(e => {
+    body.imagens.forEach(e => {
         if (e?.nome !== undefined){
-            newImages.push(e?.nome)
+            newImages.push(e.nome)
         }
     })
 

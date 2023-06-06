@@ -47,7 +47,7 @@ const newProductSCHEMA = joi.object<newProductBody>({
     comprimento: joi.number(),
     peso: joi.number(),
     categorias: joi.array().items(newProductCategoriasSCHEMA).required(),
-    imagens: joi.array().items(newProductImagesBodySCHEMA).required(),
+    imagens: joi.array().required(),
 
 })
 
