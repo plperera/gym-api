@@ -66,6 +66,10 @@ async function putProduct(body: putProductBody){
         }
     })
 
+    if (newImages.length === 0){
+        throw requestError(400, "BadRequest")
+    }
+
     const hasProduct = await productRepository.findById(body.id)
 
     if (!hasProduct) {
