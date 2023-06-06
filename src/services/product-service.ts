@@ -1,7 +1,7 @@
 import { conflictError, notFoundError, requestError, unauthorizedError } from "@/errors"
 import authRepository from "@/repositories/auth-repository"
 import userRepository from "@/repositories/user-respository"
-import httpStatus from "http-status"
+import httpStatus, { BAD_REQUEST } from "http-status"
 import { newCategoryBody } from "@/schemas/newCategorySCHEMA"
 import categoryRepository from "@/repositories/category-repository"
 import { categorias } from "@prisma/client"
@@ -59,30 +59,30 @@ async function changeProductStatus(body:{ id: number, nome: string, newStatus: b
 
 }
 async function putProduct(body: putProductBody){
-    try {
-
-        const hasProduct = await productRepository.findById(body.id)
-
-        if (!hasProduct) {
-            throw notFoundError()
-        }
-
-        const { imagens, id } = body
     
-        await productRepository.deleteProductImage(id)
+    body.imagens.filter(e => {
+        if (e?.nome){
+            return e
+        }
+    })
+    const hasProduct = await productRepository.findById(body.id)
 
-        imagens.map( async (e) => {
-            const response = await productRepository.createProductImage({imageName: e.nome, productId: id})
-            console.log(response)
-        })
-        
-        const newProduct = await productRepository.putProduct(body)
-        return newProduct
-        
-        
-    } catch (error) {
-        return error
+    if (!hasProduct) {
+        throw notFoundError()
     }
+
+    const { imagens, id } = body
+
+    await productRepository.deleteProductImage(id)
+
+    imagens.map( async (e) => {
+        const response = await productRepository.createProductImage({imageName: e.nome, productId: id})
+        console.log(response)
+    })
+    
+    const newProduct = await productRepository.putProduct(body)
+    return newProduct
+        
 }
 async function deleteProduct(productId: number){
     try {

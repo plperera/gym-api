@@ -60,7 +60,6 @@ export async function newProduct(req: AuthenticatedRequest, res: Response){
           return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
     }
 }
-
 export async function getAllProducts(req: AuthenticatedRequest, res: Response){
     try {
         
@@ -73,7 +72,6 @@ export async function getAllProducts(req: AuthenticatedRequest, res: Response){
         return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
     }
 }
-
 export async function putProduct(req: Request, res: Response){
     try { 
 
@@ -88,6 +86,9 @@ export async function putProduct(req: Request, res: Response){
         return res.sendStatus(httpStatus.OK)
 
     } catch (error) {
+        if (error?.name === "BadRequest"){
+            return res.sendStatus(httpStatus.BAD_REQUEST)
+        }
         return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
     }
 }
@@ -113,7 +114,6 @@ export async function getProductById(req: Request, res: Response){
         return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
     }
 }
-
 export async function deleteProductById(req: Request, res: Response){
     try { 
         const { id } = req.body

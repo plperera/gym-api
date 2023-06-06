@@ -49,7 +49,7 @@ const putProductSCHEMA = joi.object<putProductBody>({
     comprimento: joi.number(),
     peso: joi.number(),
     categorias: joi.array(),
-    imagens: joi.array().items(putProductImagesBodySCHEMA).required(),
+    imagens: joi.array().required(),
 
 })
 
