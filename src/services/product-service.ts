@@ -59,12 +59,13 @@ async function changeProductStatus(body:{ id: number, nome: string, newStatus: b
 
 }
 async function putProduct(body: putProductBody){
-    
-    body.imagens.filter(e => {
-        if (e?.nome){
-            return e
+    const newImages: string[] = []
+    body.imagens.map(e => {
+        if (e?.nome !== undefined){
+            newImages.push(e?.nome)
         }
     })
+
     const hasProduct = await productRepository.findById(body.id)
 
     if (!hasProduct) {
@@ -75,8 +76,8 @@ async function putProduct(body: putProductBody){
 
     await productRepository.deleteProductImage(id)
 
-    imagens.map( async (e) => {
-        const response = await productRepository.createProductImage({imageName: e.nome, productId: id})
+    newImages.map( async (e) => {
+        const response = await productRepository.createProductImage({imageName: e, productId: id})
         console.log(response)
     })
     
