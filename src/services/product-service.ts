@@ -66,10 +66,6 @@ async function putProduct(body: putProductBody){
         }
     })
 
-    if (newImages.length === 0){
-        throw requestError(400, "BadRequest")
-    }
-
     const hasProduct = await productRepository.findById(body.id)
 
     if (!hasProduct) {
@@ -80,11 +76,15 @@ async function putProduct(body: putProductBody){
 
     await productRepository.deleteProductImage(id)
 
-    newImages.map( async (e) => {
-        const response = await productRepository.createProductImage({imageName: e, productId: id})
-        console.log(response)
-    })
-    
+    if (newImages.length > 0){
+
+        newImages.map( async (e) => {
+            const response = await productRepository.createProductImage({imageName: e, productId: id})
+            console.log(response)
+        })
+
+    }
+
     const newProduct = await productRepository.putProduct(body)
     return newProduct
         
