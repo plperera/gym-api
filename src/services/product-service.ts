@@ -74,9 +74,9 @@ async function putProduct(body: putProductBody){
 
     const { imagens, id } = body
 
-    await productRepository.deleteProductImage(id)
-
     if (newImages.length > 0){
+
+        await productRepository.deleteProductImage(id)
 
         newImages.map( async (e) => {
             const response = await productRepository.createProductImage({imageName: e, productId: id})
