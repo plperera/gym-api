@@ -14,11 +14,11 @@ loadEnv();
 const app = express();
 app
   app.use(cors({
-    origin: 'https://www.upsportbrasil.com.br',  // Altere isso para seu domínio
+    origin: 'https://www.upsportbrasil.com.br',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,
-    credentials: true  // Isso permite que cookies sejam enviados.
+    credentials: true
   }))
   .use(express.json())
   .use("/auth", authRouter)
